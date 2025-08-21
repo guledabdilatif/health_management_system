@@ -5,9 +5,8 @@ import {
   LayoutDashboard,
   ClipboardList,
   Users,
-  MapPin,
-  Briefcase,
-  CalendarDays,
+ 
+  FolderOpen,
   FileText,
 } from "lucide-react";
 import { colors } from "../constant.js/colors";
@@ -96,7 +95,7 @@ const Sidebar = () => {
               backgroundColor: isActive ? colors.secondary : "transparent",
             })}
           >
-            <Briefcase size={18} className="me-2" />
+            <FileText size={18} className="me-2" />
             <span>Documents</span>
           </NavLink>
         </li>
@@ -110,7 +109,7 @@ const Sidebar = () => {
               backgroundColor: isActive ? colors.secondary : "transparent",
             })}
           >
-            <Briefcase size={18} className="me-2" />
+            <FolderOpen  size={18} className="me-2" />
             <span>Reports</span>
           </NavLink>
         </li>
