@@ -27,11 +27,11 @@ const DashboardCards = () => {
   ];
 
   return (
-    <div className="container mt-4">
+    <div className="container" style={{marginTop:80}}>
       <div className="row">
         {cards.map((card, index) => (
           <div key={index} className="col-md-3 mb-4">
-            <div className="card shadow-sm text-center p-3 border-0">
+            <div className=" shadow text-center p-4 rounded border-0">
               <div className="mb-2">{card.icon}</div>
               <h5 className="fw-bold">{card.title}</h5>
               <p className="fs-4 mb-0">{card.value}</p>

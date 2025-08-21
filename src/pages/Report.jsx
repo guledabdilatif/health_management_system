@@ -3,7 +3,7 @@ import Sidebar from "../components/Sidebar";
 import Navbar from "./Navbar";
 
 const Report = () => {
- 
+
   return (
     <div style={{ display: "flex", alignItems: "start" }}>
       {/* Sidebar */}
@@ -14,8 +14,10 @@ const Report = () => {
       {/* Main Content */}
       <div className="p-6" style={{ width: "80%", height: "100vh" }}>
         <Navbar />
-<p>Reports</p>
-      
+        <div style={{ marginTop: 70 }}>
+          <p>Reports</p>
+        </div>
+
       </div>
     </div>
   );

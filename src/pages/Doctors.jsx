@@ -3,6 +3,7 @@ import Sidebar from "../components/Sidebar";
 import Navbar from "./Navbar";
 import { Eye, Edit, Trash2 } from "lucide-react";
 import DoctorsDetail from "./DoctorsDetail"; 
+import { colors } from "../constant.js/colors";
 
 const Doctors = () => {
   const [doctors, setDoctors] = useState([
@@ -57,8 +58,8 @@ const Doctors = () => {
       {/* Main Content */}
       <div className="p-6" style={{ width: "80%", height: "100vh" }}>
         <Navbar />
-        <div className="container mt-4">
-          <h2 style={{ color: "black" }}>Doctors Directory</h2>
+        <div className="container " style={{marginTop:90}}>
+          <h4 style={{ color: colors.secondary }}>Doctors Directory</h4>
           <table className="table table-bordered table-striped">
             <thead style={{ backgroundColor: "black", color: "white" }}>
               <tr>

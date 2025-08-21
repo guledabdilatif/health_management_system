@@ -45,13 +45,9 @@ const Patients = () => {
   });
 
   const [selectedPatient, setSelectedPatient] = useState(null);
-
-  // Handle input change
   const handleChange = (e) => {
     setNewPatient({ ...newPatient, [e.target.name]: e.target.value });
   };
-
-  // Add or Edit Patient
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -108,7 +104,7 @@ const Patients = () => {
       {/* Main Content */}
       <div className="p-6" style={{ width: "80%", height: "100vh" }}>
         <Navbar />
-        <div className="container mt-4">
+        <div className="container" style={{marginTop:70}}>
           <button
             onClick={() => {
               setShowForm(true);
@@ -141,7 +137,7 @@ const Patients = () => {
                 <th>Contact</th>
                 <th>Blood Group</th>
                 <th>Status</th>
-                <th>Actions</th> {/* ✅ new column */}
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -194,8 +190,6 @@ const Patients = () => {
             </tbody>
           </table>
         </div>
-
-        {/* Popup Form Modal */}
         {showForm && (
           <div
             className="fixed inset-0 items-center justify-center"
@@ -315,7 +309,7 @@ const Patients = () => {
                   </select>
                 </div>
 
-                {/* Buttons */}
+             
                 <div className="d-flex justify-content-between">
                   <button
                     type="button"

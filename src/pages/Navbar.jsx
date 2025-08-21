@@ -1,6 +1,7 @@
 // src/components/Navbar.jsx
 import React, { useState } from "react";
 import { User, LogOut } from "lucide-react";
+import { colors } from "../constant.js/colors";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -8,19 +9,20 @@ export default function Navbar() {
   const handleToggle = () => setOpen(!open);
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light  px-3">
+    <nav className="navbar navbar-expand-lg  px-3" style={{position:'fixed', width:'83%', top:0, right:0, zIndex:1000}}>
       <div className="container-fluid">
-        <a className="navbar-brand fw-bold text-success" href="/" style={{color:'green'
+        <a className="navbar-brand fw-bold text-success" href="/" style={{color:colors.primary
         }}>
-          Attendance System
+         Health Care
         </a>
 
         <div className="ms-auto position-relative">
           <button
-            className="btn btn-light rounded-full border"
+            className="btn btn-light border shadow text-center"
             onClick={handleToggle}
+            style={{width:50, height:50, borderRadius:"50%", display:'flex', alignItems:'center'}}
           >
-            <User size={20} />
+            <User size={30} color={colors.primary} style={{fontWeight:'bold'}}/>
           </button>
 
           {/* Profile dropdown */}
@@ -31,8 +33,8 @@ export default function Navbar() {
             >
               <div className="card-body">
                 <div className="d-flex align-items-center mb-3">
-                  <div className="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center" style={{ width: "40px", height: "40px" }}>
-                    <User size={20} />
+                  <div className="rounded-circle shadow text-white d-flex justify-content-center align-items-center" style={{ width: "50px", height: "50px" }}>
+                    <User size={20} color={colors.primary} />
                   </div>
                   <div className="ms-2">
                     <h6 className="mb-0">John Doe</h6>
