@@ -57,31 +57,31 @@ const DoctorsDetail = ({ doctor, onClose }) => {
                     <div className="col-md-8">
                         <div className="row">
                             <div className="col-md-4">
-                                <div className=" p-4 shadow rounded">
-                                     card 1
+                                <div className=" p-4 shadow rounded text-center">
+                                     <p>Total Patients </p>
+                                     <h2>4</h2>
                                 </div>
                             </div>
                             <div className="col-md-4">
-                                <div className=" p-4 shadow rounded">
-                                     card 2
+                                <div className=" p-4 shadow rounded text-center">
+                                      <p>License </p>
+                                     <h2>LC4</h2>
                                 </div>
                             </div>
                             <div className="col-md-4">
-                                <div className=" p-4 shadow rounded">
-                                    card 3
+                                <div className=" p-4 shadow rounded text-center">
+                                    <p>Staff ID </p>
+                                     <h2>ID001</h2>
                                 </div>
                             </div>
                         </div>.
-                        <div className="col-md-12 mb-4 p-4 shadow rounded">
-                            card 4
-                        </div>
-                        <h2>Apointments</h2>
+                        <h4>Apointments</h4>
 
                     </div>
                 </div>
 
                 <div>
-                    <h2>Information</h2>
+                    <h4>Information</h4>
                     <p><strong>Specialization:</strong> {doctor.specialization}</p>
                     <p><strong>Phone:</strong> {doctor.phone}</p>
                     <p><strong>Email:</strong> {doctor.email}</p>

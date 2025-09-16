@@ -2,7 +2,7 @@ import React from "react";
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 const data = [
-  { name: "Patients user", value: 400 },
+  { name: "Patients", value: 400 },
   { name: "Documents", value: 120 },
   { name: "Doctors", value: 30 },
 ];

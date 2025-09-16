@@ -5,7 +5,7 @@ import './App.css'
 import { Route, Routes, BrowserRouter } from 'react-router-dom'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
-import Doctors from './pages/Doctors'
+import Staffs from './pages/Staffs'
 
 import Documents from './pages/Documents'
 import Patients from './pages/Patients'
@@ -19,7 +19,7 @@ function App() {
         <Routes>
           <Route path='/' element={<Login />} />
           <Route path='/dashboard' element={<Dashboard />} />
-          <Route path="/doctors" element={<Doctors />} />        
+          <Route path="/doctors" element={<Staffs />} />        
        
           <Route path="/documents" element={<Documents />} />
           <Route path="/patients" element={<Patients />} />

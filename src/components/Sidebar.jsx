@@ -66,7 +66,7 @@ const Sidebar = () => {
             })}
           >
             <ClipboardList size={18} className="me-2" />
-            <span>Doctors</span>
+            <span>Staffs</span>
           </NavLink>
         </li>
 

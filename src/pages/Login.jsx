@@ -13,7 +13,7 @@ const Login = () => {
   };
 
   return (
-    <div className="container-fluid d-flex mt-4 align-items-center justify-content-center bg-light">
+    <div className="container-fluid d-flex mt-4 h-100vh align-items-center justify-content-center bg-light">
       <div
         className="row w-100 shadow-lg bg-white rounded "
         style={{ maxWidth: "1000px" }}
