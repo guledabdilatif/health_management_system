@@ -1,53 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import Navbar from "./Navbar";
 import { Eye, Edit, Trash2 } from "lucide-react";
 import DoctorsDetail from "./DoctorsDetail";
 import { colors } from "../constant.js/colors";
+import axios from "axios";
+
+const API_URL = "https://health-mngt-system.vercel.app/staff"; // update to match your backend
 
 const Staffs = () => {
-  const [doctors, setDoctors] = useState([
-    {
-      id: 1,
-      name: "Dr. John Doe",
-      specialization: "Cardiologist",
-      phone: "+254 700 123456",
-      email: "johndoe@hospital.com",
-      status: "available",
-      location: "Nairobi, Kenya",
-    },
-    {
-      id: 2,
-      name: "Dr. Jane Smith",
-      specialization: "Pediatrician",
-      phone: "+254 711 654321",
-      email: "janesmith@hospital.com",
-      status: "on_leave",
-      location: "Mombasa, Kenya",
-    },
-    {
-      id: 3,
-      name: "Dr. Michael Brown",
-      specialization: "Dermatologist",
-      phone: "+254 722 987654",
-      email: "michaelbrown@hospital.com",
-      status: "available",
-      location: "Kisumu, Kenya",
-    },
-  ]);
-
-
+  const [doctors, setDoctors] = useState([]);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const [editingId, setEditingId] = useState(null);
 
-  const handleView = (doctor) => {
-    setSelectedDoctor(doctor);
-  };
-
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this doctor?")) {
-      setDoctors(doctors.filter((d) => d.id !== id));
-    }
-  };
+  // form state
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
@@ -72,6 +38,35 @@ const Staffs = () => {
     consultationFee: 0,
   });
 
+  // fetch staff
+  const fetchStaff = async () => {
+    try {
+      const res = await axios.get(API_URL);
+      setDoctors(res.data.data?.results || res.data.data || []);
+    } catch (err) {
+      console.error("Error fetching staff:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchStaff();
+  }, []);
+
+  const handleView = (doctor) => {
+    setSelectedDoctor(doctor);
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this doctor?")) {
+      try {
+        await axios.delete(`${API_URL}/${id}`);
+        fetchStaff();
+      } catch (err) {
+        console.error("Error deleting staff:", err);
+      }
+    }
+  };
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -80,10 +75,61 @@ const Staffs = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Submitted:", formData);
+    try {
+      if (editingId) {
+        // update staff
+        await axios.put(`${API_URL}/${editingId}`, formData);
+      } else {
+        // add staff
+        await axios.post(API_URL, formData);
+      }
+      fetchStaff();
+
+      // close modal after save
+      const modal = window.bootstrap.Modal.getInstance(
+        document.getElementById("staffModal")
+      );
+      modal.hide();
+    } catch (err) {
+      console.error("Error saving staff:", err);
+    }
   };
+
+  const startEdit = (staff) => {
+    setEditingId(staff._id || staff.id);
+    setFormData({
+      fullName: staff.fullName || "",
+      phone: staff.phone || "",
+      email: staff.email || "",
+      gender: staff.gender || "",
+      dateOfBirth: staff.dateOfBirth || "",
+      staffId: staff.staffId || "",
+      staffType: staff.staffType || "",
+      department: staff.department || "",
+      employmentType: staff.employmentType || "Full-time",
+      isActive: staff.isActive ?? true,
+      isSuspended: staff.isSuspended ?? false,
+      profilePhoto: staff.profilePhoto || "",
+      emergencyContactName: staff.emergencyContactName || "",
+      emergencyContactPhone: staff.emergencyContactPhone || "",
+      password: "", // 🔒 keep empty
+      specialization: staff.specialization || "",
+      qualifications: staff.qualifications || "",
+      licenseNumber: staff.licenseNumber || "",
+      licenseExpiry: staff.licenseExpiry || "",
+      yearsOfExperience: staff.yearsOfExperience || 0,
+      consultationFee: staff.consultationFee || 0,
+    });
+
+    // 👉 open modal programmatically
+    const modal = new window.bootstrap.Modal(
+      document.getElementById("staffModal")
+    );
+    modal.show();
+  };
+
 
   return (
     <div style={{ display: "flex", alignItems: "start" }}>
@@ -98,9 +144,12 @@ const Staffs = () => {
         <div className="container " style={{ marginTop: 90 }}>
           <h4 style={{ color: colors.secondary }}>Doctors Directory</h4>
 
-          
           <div className="d-flex justify-content-end gap-4 align-items-center mb-4">
-            <input type="text" placeholder="Search by name or email" className="form-control"/>
+            <input
+              type="text"
+              placeholder="Search by name or email"
+              className="form-control"
+            />
             <form action="">
               <select
                 name="employmentType"
@@ -130,8 +179,16 @@ const Staffs = () => {
                 <option>Admin</option>
               </select>
             </form>
-              <button className="btn btn-success btn-sm float-end" data-bs-toggle="modal" data-bs-target="#staffModal">+ Add Staff</button>
+            <button
+              className="btn btn-success btn-sm float-end"
+              data-bs-toggle="modal"
+              data-bs-target="#staffModal"
+            >
+              + Add Staff
+            </button>
           </div>
+
+          {/* Table */}
           <table className="table table-bordered table-striped">
             <thead style={{ backgroundColor: "black", color: "white" }}>
               <tr>
@@ -141,20 +198,21 @@ const Staffs = () => {
                 <th>Phone</th>
                 <th>Email</th>
                 <th>Status</th>
-                <th>Location</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {doctors.map((doc, idx) => (
-                <tr key={doc.id}>
+                <tr key={doc._id || doc.id}>
                   <td>{idx + 1}</td>
-                  <td style={{ color: "black" }}>{doc.name}</td>
-                  <td style={{ color: "black" }}>{doc.specialization}</td>
+                  <td style={{ color: "black" }}>{doc.fullName || doc.name}</td>
+                  <td style={{ color: "black" }}>
+                    {doc.specialization || "-"}
+                  </td>
                   <td style={{ color: "black" }}>{doc.phone}</td>
                   <td style={{ color: "black" }}>{doc.email}</td>
                   <td>
-                    {doc.status === "available" ? (
+                    {doc.isActive || doc.status === "available" ? (
                       <span
                         className="badge"
                         style={{ backgroundColor: "green", color: "white" }}
@@ -170,8 +228,7 @@ const Staffs = () => {
                       </span>
                     )}
                   </td>
-                  <td style={{ color: "black" }}>{doc.location}</td>
-                  <td style={{ display: 'flex' }}>
+                  <td style={{ display: "flex" }}>
                     <button
                       type="button"
                       className="btn btn-sm btn-info me-2"
@@ -182,14 +239,16 @@ const Staffs = () => {
                     <button
                       type="button"
                       className="btn btn-sm btn-warning me-2"
-                    // your edit handler here
+                      onClick={() => startEdit(doc)}
+                      data-bs-toggle="modal"
+                      data-bs-target="#staffModal"
                     >
                       <Edit size={16} />
                     </button>
                     <button
                       type="button"
                       className="btn btn-sm btn-danger"
-                      onClick={() => handleDelete(doc.id)}
+                      onClick={() => handleDelete(doc._id || doc.id)}
                     >
                       <Trash2 size={16} />
                     </button>
@@ -198,17 +257,29 @@ const Staffs = () => {
               ))}
             </tbody>
           </table>
-          {/* add staff form  */}
-          <div class="modal fade" id="staffModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
 
+          {/* Add/Edit Staff Modal (kept intact) */}
+          <div
+            className="modal fade"
+            id="staffModal"
+            tabIndex="-1"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true"
           >
-            <div class="modal-dialog" style={{ maxWidth: "80%" }}>
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h1 class="modal-title fs-5" id="exampleModalLabel">Add Staff</h1>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div className="modal-dialog" style={{ maxWidth: "80%" }}>
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h1 className="modal-title fs-5" id="exampleModalLabel">
+                    {editingId ? "Edit Staff" : "Add Staff"}
+                  </h1>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
                 </div>
-                <div class="modal-body">
+                <div className="modal-body">
                   <form onSubmit={handleSubmit}>
                     <div className="row g-3">
                       {/* Full Name */}
@@ -495,7 +566,7 @@ const Staffs = () => {
           </div>
         </div>
 
-        {/* Show DoctorsDetail ifF selected */}
+        {/* Doctor Detail Modal */}
         {selectedDoctor && (
           <DoctorsDetail
             doctor={selectedDoctor}
