@@ -57,7 +57,7 @@ const Sidebar = () => {
 
         <li className="mb-2">
           <NavLink
-            to="/doctors"
+            to="/staffs"
             className={({ isActive }) =>
               `${linkBase} ${isActive ? "text-white" : "text-white-50"}`
             }

@@ -2,7 +2,7 @@ import React from "react";
 import { User, X } from "lucide-react";
 import { colors } from "../constant.js/colors";
 
-const DoctorsDetail = ({ doctor, onClose }) => {
+const StaffDetails = ({ doctor, onClose }) => {
     if (!doctor) return null;
 
     return (
@@ -118,4 +118,4 @@ const DoctorsDetail = ({ doctor, onClose }) => {
     );
 };
 
-export default DoctorsDetail;
+export default StaffDetails;

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import Navbar from "./Navbar";
 import { Eye, Edit, Trash2 } from "lucide-react";
-import DoctorsDetail from "./DoctorsDetail";
+import DoctorsDetail from "./StaffDetails";
 import { colors } from "../constant.js/colors";
 import axios from "axios";
 import Form from "../components/Staffs/Form";
@@ -167,6 +167,36 @@ const Staffs = () => {
     }
   };
 
+  // search and filters 
+  const [filters, setFilters] = useState({
+    search: "",
+    employmentType: "",
+    staffType: "",
+  });
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prev) => ({ ...prev, [name]: value }));
+  };
+  // Apply search & filters
+  const filteredDoctors = doctors.filter((doc) => {
+    const searchMatch =
+      filters.search === "" ||
+      (doc.fullName?.toLowerCase().includes(filters.search.toLowerCase())) ||
+      (doc.email?.toLowerCase().includes(filters.search.toLowerCase()));
+
+    const employmentMatch =
+      filters.employmentType === "" ||
+      doc.employmentType === filters.employmentType;
+
+    const staffTypeMatch =
+      filters.staffType === "" ||
+      doc.staffType === filters.staffType;
+
+    return searchMatch && employmentMatch && staffTypeMatch;
+  });
+
+
   return (
     <div style={{ display: "flex", alignItems: "start" }}>
       {/* Sidebar */}
@@ -180,28 +210,49 @@ const Staffs = () => {
         <div className="container" style={{ marginTop: 90 }}>
           <h4 style={{ color: colors.secondary }}>Doctors Directory</h4>
 
-          <div className="d-flex justify-content-end gap-4 align-items-center mb-4">
-            <input type="text" placeholder="Search by name or email" className="form-control" />
-            <form action="">
-              <select name="employmentType" className="form-select" value={formData.employmentType} onChange={handleChange}>
-                <option>Full-time</option>
-                <option>Part-time</option>
-                <option>Visiting</option>
-                <option>Contract</option>
-              </select>
-            </form>
-            <form action="">
-              <select name="staffType" className="form-select" value={formData.staffType} onChange={handleChange} required>
-                <option value="">Select Type</option>
-                <option>Doctor</option>
-                <option>Nurse</option>
-                <option>LabTech</option>
-                <option>Pharmacist</option>
-                <option>Admin</option>
-              </select>
-            </form>
+          {/* search and filters  */}
+          <div className="d-flex justify-content-around mb-4 gap-3 align-items-center">
+            {/* Search */}
+            <input
+              type="text"
+              name="search"
+              placeholder="Search by name or email"
+              className="form-control"
+              value={filters.search}
+              onChange={handleFilterChange}
+            />
+
+            {/* Employment Type */}
+            <select
+              name="employmentType"
+              className="form-select"
+              value={filters.employmentType}
+              onChange={handleFilterChange}
+            >
+              <option value="">All Employment Types</option>
+              <option value="Full-time">Full-time</option>
+              <option value="Part-time">Part-time</option>
+              <option value="Contract">Contract</option>
+            </select>
+
+            {/* Staff Type */}
+            <select
+              name="staffType"
+              className="form-select"
+              value={filters.staffType}
+              onChange={handleFilterChange}
+            >
+              <option value="">All Staff Types</option>
+              <option value="Doctor">Doctor</option>
+              <option value="Nurse">Nurse</option>
+              <option value="LabTech">LabTech</option>
+              <option value="Pharmacist">Pharmacist</option>
+            </select>
+
+            {/* Add Staff Button */}
             <button
               className="btn btn-success btn-sm float-end"
+              style={{ minWidth: "120px" }}
               data-bs-toggle="modal"
               data-bs-target="#staffModal"
               onClick={() => {
@@ -234,6 +285,7 @@ const Staffs = () => {
               + Add Staff
             </button>
           </div>
+          {/* end search & filter  */}
 
           {/* Table */}
           <table className="table table-bordered table-striped">
@@ -249,7 +301,7 @@ const Staffs = () => {
               </tr>
             </thead>
             <tbody>
-              {doctors.map((doc, idx) => (
+              {filteredDoctors.map((doc, idx) => (
                 <tr key={doc._id || doc.id}>
                   <td>{idx + 1}</td>
                   <td style={{ color: "black" }}>{doc.fullName || doc.name}</td>
