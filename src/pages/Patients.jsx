@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Navbar from "./Navbar";
 import { Eye, Edit, Trash2 } from "lucide-react"; // ✅ icons
+import PatientForm from "../components/Patient/PatientForm";
 
 const Patients = () => {
   const [patients, setPatients] = useState([
@@ -104,7 +105,7 @@ const Patients = () => {
       {/* Main Content */}
       <div className="p-6" style={{ width: "80%", height: "100vh" }}>
         <Navbar />
-        <div className="container" style={{marginTop:70}}>
+        <div className="container" style={{ marginTop: 70 }}>
           <button
             onClick={() => {
               setShowForm(true);
@@ -199,130 +200,12 @@ const Patients = () => {
               <h3 className="mb-3" style={{ color: "black" }}>
                 {selectedPatient ? "Edit Patient" : "Add Patient"}
               </h3>
-              <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                  <label className="form-label">Full Name</label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={newPatient.name}
-                    onChange={handleChange}
-                    className="form-control"
-                    required
-                  />
-                </div>
-
-                <div className="row">
-                  <div className="mb-3 col-md-6">
-                    <label className="form-label">Age</label>
-                    <input
-                      type="number"
-                      name="age"
-                      value={newPatient.age}
-                      onChange={handleChange}
-                      className="form-control"
-                      required
-                    />
-                  </div>
-                  <div className="mb-3 col-md-6">
-                    <label className="form-label">Gender</label>
-                    <select
-                      name="gender"
-                      value={newPatient.gender}
-                      onChange={handleChange}
-                      className="form-control"
-                      required
-                    >
-                      <option value="">Select Gender</option>
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="mb-3">
-                  <label className="form-label">Contact</label>
-                  <input
-                    type="text"
-                    name="contact"
-                    value={newPatient.contact}
-                    onChange={handleChange}
-                    className="form-control"
-                    required
-                  />
-                </div>
-
-                <div className="mb-3">
-                  <label className="form-label">Address</label>
-                  <input
-                    type="text"
-                    name="address"
-                    value={newPatient.address}
-                    onChange={handleChange}
-                    className="form-control"
-                  />
-                </div>
-
-                <div className="row">
-                  <div className="mb-3 col-md-6">
-                    <label className="form-label">Blood Group</label>
-                    <input
-                      type="text"
-                      name="bloodGroup"
-                      value={newPatient.bloodGroup}
-                      onChange={handleChange}
-                      className="form-control"
-                    />
-                  </div>
-                  <div className="mb-3 col-md-6">
-                    <label className="form-label">Allergies</label>
-                    <input
-                      type="text"
-                      name="allergies"
-                      value={newPatient.allergies}
-                      onChange={handleChange}
-                      className="form-control"
-                    />
-                  </div>
-                </div>
-
-                <div className="mb-3">
-                  <label className="form-label">Medical Conditions</label>
-                  <textarea
-                    name="conditions"
-                    value={newPatient.conditions}
-                    onChange={handleChange}
-                    className="form-control"
-                  />
-                </div>
-
-                <div className="mb-3">
-                  <label className="form-label">Status</label>
-                  <select
-                    name="status"
-                    value={newPatient.status}
-                    onChange={handleChange}
-                    className="form-control"
-                  >
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                  </select>
-                </div>
-
-             
-                <div className="d-flex justify-content-between">
-                  <button
-                    type="button"
-                    className="btn btn-danger"
-                    onClick={() => setShowForm(false)}
-                  >
-                    Cancel
-                  </button>
-                  <button type="submit" className="btn btn-success">
-                    Save
-                  </button>
-                </div>
-              </form>
+              <PatientForm
+                formData={newPatient}
+                handleChange={handleChange}
+                handleSubmit={handleSubmit}
+                editingId={selectedPatient?.id}
+              />
             </div>
           </div>
         )}

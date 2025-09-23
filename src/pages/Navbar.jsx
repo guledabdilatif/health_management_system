@@ -9,7 +9,7 @@ export default function Navbar() {
   const handleToggle = () => setOpen(!open);
 
   return (
-    <nav className="navbar navbar-expand-lg px-3" style={{ position: 'fixed', width: '80%', top: 0, right: 0,  zIndex: 1000, backgroundColor: "white" }}>
+    <nav className="navbar navbar-expand-lg px-3" style={{ position: 'fixed', width: '80%', top: 0, right: 0, zIndex: 1000, backgroundColor: "white" }}>
       <div className="container-fluid">
         <a className="navbar-brand fw-bold text-success" href="/" style={{
           color: colors.primary
