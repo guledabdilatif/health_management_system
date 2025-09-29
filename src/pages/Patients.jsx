@@ -5,14 +5,31 @@ import Navbar from "./Navbar";
 import { Eye, Edit, Trash2 } from "lucide-react";
 import PatientForm from "../components/Patient/PatientForm";
 import axios from "axios";
-
+import PatientDetails from "../components/Patient/PatientDetails";
 const API_URL = "https://health-mngt-system.vercel.app/patients";
 
 const Patients = () => {
   const [patients, setPatients] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [newPatient, setNewPatient] = useState(initialForm());
+  const [viewPatient, setViewPatient] = useState(null);
   const [selectedPatient, setSelectedPatient] = useState(null);
+
+{/* inside table row */}
+<button
+  className="btn btn-info btn-sm"
+  onClick={() => setSelectedPatient(patient)}
+>
+  View
+</button>
+
+{/* modal */}
+<PatientDetails
+  patient={selectedPatient}
+  onClose={() => setSelectedPatient(null)}
+/>
+
+
 
   useEffect(() => {
     fetchPatients();
@@ -97,10 +114,8 @@ const Patients = () => {
 
   const handleView = (p) => {
     alert(
-      `Patient Details:\n\nName: ${p.fullName}\nGender: ${p.gender}\nPhone: ${
-        p.phone
-      }\nBlood Group: ${p.bloodGroup || "N/A"}\nAllergies: ${
-        p.allergies?.join(", ") || "None"
+      `Patient Details:\n\nName: ${p.fullName}\nGender: ${p.gender}\nPhone: ${p.phone
+      }\nBlood Group: ${p.bloodGroup || "N/A"}\nAllergies: ${p.allergies?.join(", ") || "None"
       }\nConditions: ${p.chronicConditions?.join(", ") || "None"}`
     );
   };
@@ -183,7 +198,7 @@ const Patients = () => {
                     <div className="d-flex justify-content-center gap-2">
                       <button
                         className="btn btn-sm btn-outline-dark"
-                        onClick={() => handleView(p)}
+                        onClick={() => setViewPatient(p)}
                         title="View"
                       >
                         <Eye size={16} />
@@ -209,14 +224,20 @@ const Patients = () => {
             </tbody>
           </table>
         </div>
-
+        {/* Modal */}
+        {viewPatient && (
+          <PatientDetails
+            patient={viewPatient}
+            onClose={() => setViewPatient(null)}
+          />
+        )}
         {/* Patient Form */}
         {showForm && (
           <div
-            className="fixed inset-0 items-center justify-center"
-            style={{ position: "absolute", top: "20px", width: "100%" }}
+            className="fixed items-center justify-center "
+            style={{ position: "absolute", top: "40px", width: "100%" }}
           >
-            <div className="bg-white p-5 rounded-3 shadow-lg" style={{ width: "60%" }}>
+            <div className="bg-white p-5 rounded-3 shadow" style={{ width: "75%", margin:0,  }}>
               <h3 className="mb-3" style={{ color: "black" }}>
                 {selectedPatient ? "Edit Patient" : "Add Patient"}
               </h3>
@@ -225,6 +246,7 @@ const Patients = () => {
                 handleChange={handleChange}
                 handleSubmit={handleSubmit}
                 editingId={selectedPatient?._id}
+                style={{backgroundColor:'red'}}
               />
             </div>
           </div>

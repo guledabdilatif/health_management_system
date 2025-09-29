@@ -4,7 +4,7 @@ import React from "react";
 const PatientForm = ({ formData, handleChange, handleSubmit, editingId }) => {
   return (
     <form onSubmit={handleSubmit}>
-      <div className="row g-3">
+      <div className="row">
         {/* Full Name */}
         <div className="col-md-6">
           <label className="form-label">Full Name</label>
