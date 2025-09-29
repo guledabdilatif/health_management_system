@@ -7,7 +7,7 @@ import { colors } from "../constant.js/colors";
 import axios from "axios";
 import Form from "../components/Staffs/Form";
 
-const API_URL = "https://health-mngt-system.vercel.app/staff";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const Staffs = () => {
   const [doctors, setDoctors] = useState([]);
@@ -41,7 +41,7 @@ const Staffs = () => {
   // Fetch staff list
   const fetchStaff = async () => {
     try {
-      const res = await axios.get(API_URL);
+      const res = await axios.get(`${API_URL}/staff`);
       // support a few shapes: { staff: [...] } or { data: { results: [...] } } or direct array
       setDoctors(res.data.staff || res.data.data?.results || res.data.data || res.data || []);
     } catch (err) {
@@ -60,7 +60,7 @@ const Staffs = () => {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this doctor?")) return;
     try {
-      await axios.delete(`${API_URL}/${id}`);
+      await axios.delete(`${API_URL}/staff/${id}`);
       // reload to reflect deletion
       window.location.reload();
     } catch (err) {
@@ -99,7 +99,7 @@ const Staffs = () => {
 
     try {
       if (editingId) {
-        await axios.put(`${API_URL}/${editingId}`, payload);
+        await axios.put(`${API_URL}/staff/${editingId}`, payload);
       } else {
         await axios.post(API_URL, payload);
       }

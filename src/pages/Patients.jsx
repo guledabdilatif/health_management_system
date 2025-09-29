@@ -1,98 +1,133 @@
-import React, { useState } from "react";
+// src/pages/Patients.jsx
+import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import Navbar from "./Navbar";
-import { Eye, Edit, Trash2 } from "lucide-react"; // ✅ icons
+import { Eye, Edit, Trash2 } from "lucide-react";
 import PatientForm from "../components/Patient/PatientForm";
+import axios from "axios";
+
+const API_URL = "https://health-mngt-system.vercel.app/patients";
 
 const Patients = () => {
-  const [patients, setPatients] = useState([
-    {
-      id: 1,
-      name: "John Doe",
-      age: 32,
-      gender: "Male",
-      contact: "0712345678",
-      address: "Nairobi",
-      bloodGroup: "O+",
-      allergies: "Penicillin",
-      conditions: "Diabetes",
-      status: "active",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      age: 28,
-      gender: "Female",
-      contact: "0798765432",
-      address: "Mombasa",
-      bloodGroup: "A+",
-      allergies: "None",
-      conditions: "Asthma",
-      status: "inactive",
-    },
-  ]);
-
+  const [patients, setPatients] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [newPatient, setNewPatient] = useState({
-    name: "",
-    age: "",
-    gender: "",
-    contact: "",
-    address: "",
-    bloodGroup: "",
-    allergies: "",
-    conditions: "",
-    status: "active",
-  });
-
+  const [newPatient, setNewPatient] = useState(initialForm());
   const [selectedPatient, setSelectedPatient] = useState(null);
-  const handleChange = (e) => {
-    setNewPatient({ ...newPatient, [e.target.name]: e.target.value });
+
+  useEffect(() => {
+    fetchPatients();
+  }, []);
+
+  const fetchPatients = async () => {
+    try {
+      const res = await axios.get(API_URL);
+      setPatients(res.data.data.results || []);
+    } catch (error) {
+      console.error("Error fetching patients:", error);
+    }
   };
-  const handleSubmit = (e) => {
+
+  // handle nested fields like address.street
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    if (name.includes(".")) {
+      const [parent, child] = name.split(".");
+      setNewPatient((prev) => ({
+        ...prev,
+        [parent]: { ...prev[parent], [child]: value },
+      }));
+    } else {
+      setNewPatient((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (selectedPatient) {
-      setPatients(
-        patients.map((p) =>
-          p.id === selectedPatient.id ? { ...selectedPatient, ...newPatient } : p
-        )
-      );
-      setSelectedPatient(null);
-    } else {
-      setPatients([...patients, { id: patients.length + 1, ...newPatient }]);
-    }
+    const payload = {
+      ...newPatient,
+      allergies: newPatient.allergies
+        ? newPatient.allergies.split(",").map((s) => s.trim())
+        : [],
+      chronicConditions: newPatient.chronicConditions
+        ? newPatient.chronicConditions.split(",").map((s) => s.trim())
+        : [],
+      currentMedications: newPatient.currentMedications
+        ? newPatient.currentMedications.split(",").map((s) => s.trim())
+        : [],
+      isActive: newPatient.status === "active",
+    };
 
-    setNewPatient({
-      name: "",
-      age: "",
-      gender: "",
-      contact: "",
-      address: "",
-      bloodGroup: "",
-      allergies: "",
-      conditions: "",
-      status: "active",
-    });
-    setShowForm(false);
+    try {
+      if (selectedPatient) {
+        await axios.put(`${API_URL}/${selectedPatient._id}`, payload);
+      } else {
+        await axios.post(API_URL, payload);
+      }
+      await fetchPatients();
+      resetForm();
+    } catch (error) {
+      console.error("Error saving patient:", error.response?.data || error.message);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this patient?")) {
+      try {
+        await axios.delete(`${API_URL}/${id}`);
+        setPatients(patients.filter((p) => p._id !== id));
+      } catch (error) {
+        console.error("Error deleting patient:", error);
+      }
+    }
   };
 
   const handleEdit = (patient) => {
     setSelectedPatient(patient);
-    setNewPatient(patient);
+    setNewPatient({
+      ...patient,
+      allergies: patient.allergies?.join(", ") || "",
+      chronicConditions: patient.chronicConditions?.join(", ") || "",
+      currentMedications: patient.currentMedications?.join(", ") || "",
+      status: patient.isActive ? "active" : "inactive",
+    });
     setShowForm(true);
-  };
-
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this patient?")) {
-      setPatients(patients.filter((p) => p.id !== id));
-    }
   };
 
   const handleView = (p) => {
     alert(
-      `Patient Details:\n\nName: ${p.name}\nAge: ${p.age}\nGender: ${p.gender}\nContact: ${p.contact}\nAddress: ${p.address}\nBlood Group: ${p.bloodGroup}\nAllergies: ${p.allergies}\nConditions: ${p.conditions}\nStatus: ${p.status}`
+      `Patient Details:\n\nName: ${p.fullName}\nGender: ${p.gender}\nPhone: ${
+        p.phone
+      }\nBlood Group: ${p.bloodGroup || "N/A"}\nAllergies: ${
+        p.allergies?.join(", ") || "None"
+      }\nConditions: ${p.chronicConditions?.join(", ") || "None"}`
     );
+  };
+
+  function initialForm() {
+    return {
+      fullName: "",
+      dateOfBirth: "",
+      gender: "",
+      phone: "",
+      email: "",
+      maritalStatus: "",
+      bloodGroup: "",
+      allergies: "",
+      chronicConditions: "",
+      currentMedications: "",
+      address: { street: "", city: "", state: "", postalCode: "", country: "" },
+      emergencyContact: { name: "", phone: "", relation: "" },
+      insurance: { provider: "", policyNumber: "", expiryDate: "" },
+      status: "active",
+    };
+  }
+
+  const resetForm = () => {
+    setNewPatient(initialForm());
+    setSelectedPatient(null);
+    setShowForm(false);
   };
 
   return (
@@ -108,19 +143,8 @@ const Patients = () => {
         <div className="container" style={{ marginTop: 70 }}>
           <button
             onClick={() => {
+              resetForm();
               setShowForm(true);
-              setSelectedPatient(null);
-              setNewPatient({
-                name: "",
-                age: "",
-                gender: "",
-                contact: "",
-                address: "",
-                bloodGroup: "",
-                allergies: "",
-                conditions: "",
-                status: "active",
-              });
             }}
             className="btn btn-success btn-sm float-end fs-9"
           >
@@ -133,9 +157,8 @@ const Patients = () => {
               <tr>
                 <th>#</th>
                 <th>Name</th>
-                <th>Age</th>
                 <th>Gender</th>
-                <th>Contact</th>
+                <th>Phone</th>
                 <th>Blood Group</th>
                 <th>Status</th>
                 <th>Actions</th>
@@ -143,22 +166,17 @@ const Patients = () => {
             </thead>
             <tbody>
               {patients.map((p, idx) => (
-                <tr key={p.id}>
+                <tr key={p._id}>
                   <td>{idx + 1}</td>
-                  <td style={{ color: "black" }}>{p.name}</td>
-                  <td>{p.age}</td>
+                  <td style={{ color: "black" }}>{p.fullName}</td>
                   <td>{p.gender}</td>
-                  <td>{p.contact}</td>
-                  <td>{p.bloodGroup}</td>
+                  <td>{p.phone}</td>
+                  <td>{p.bloodGroup || "N/A"}</td>
                   <td>
-                    {p.status === "active" ? (
-                      <span className="badge" style={{ backgroundColor: "green", color: "white" }}>
-                        Active
-                      </span>
+                    {p.isActive ? (
+                      <span className="badge bg-success">Active</span>
                     ) : (
-                      <span className="badge" style={{ backgroundColor: "red", color: "white" }}>
-                        Inactive
-                      </span>
+                      <span className="badge bg-danger">Inactive</span>
                     )}
                   </td>
                   <td>
@@ -179,7 +197,7 @@ const Patients = () => {
                       </button>
                       <button
                         className="btn btn-sm btn-outline-danger"
-                        onClick={() => handleDelete(p.id)}
+                        onClick={() => handleDelete(p._id)}
                         title="Delete"
                       >
                         <Trash2 size={16} />
@@ -191,6 +209,8 @@ const Patients = () => {
             </tbody>
           </table>
         </div>
+
+        {/* Patient Form */}
         {showForm && (
           <div
             className="fixed inset-0 items-center justify-center"
@@ -204,7 +224,7 @@ const Patients = () => {
                 formData={newPatient}
                 handleChange={handleChange}
                 handleSubmit={handleSubmit}
-                editingId={selectedPatient?.id}
+                editingId={selectedPatient?._id}
               />
             </div>
           </div>

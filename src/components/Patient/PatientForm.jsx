@@ -1,4 +1,4 @@
-// src/patients/Form.jsx
+// src/patients/PatientForm.jsx
 import React from "react";
 
 const PatientForm = ({ formData, handleChange, handleSubmit, editingId }) => {
@@ -10,22 +10,22 @@ const PatientForm = ({ formData, handleChange, handleSubmit, editingId }) => {
           <label className="form-label">Full Name</label>
           <input
             type="text"
-            name="name"
+            name="fullName"
             className="form-control"
-            value={formData.name}
+            value={formData.fullName}
             onChange={handleChange}
             required
           />
         </div>
 
-        {/* Age */}
+        {/* Date of Birth */}
         <div className="col-md-6">
-          <label className="form-label">Age</label>
+          <label className="form-label">Date of Birth</label>
           <input
-            type="number"
-            name="age"
+            type="date"
+            name="dateOfBirth"
             className="form-control"
-            value={formData.age}
+            value={formData.dateOfBirth?.split("T")[0] || ""}
             onChange={handleChange}
             required
           />
@@ -47,46 +47,72 @@ const PatientForm = ({ formData, handleChange, handleSubmit, editingId }) => {
           </select>
         </div>
 
-        {/* Contact */}
+        {/* Phone */}
         <div className="col-md-6">
-          <label className="form-label">Contact</label>
+          <label className="form-label">Phone</label>
           <input
             type="text"
-            name="contact"
+            name="phone"
             className="form-control"
-            value={formData.contact}
+            value={formData.phone}
             onChange={handleChange}
             required
           />
         </div>
 
-        {/* Address */}
-        <div className="col-md-12">
-          <label className="form-label">Address</label>
+        {/* Email */}
+        <div className="col-md-6">
+          <label className="form-label">Email</label>
           <input
-            type="text"
-            name="address"
+            type="email"
+            name="email"
             className="form-control"
-            value={formData.address}
+            value={formData.email}
             onChange={handleChange}
           />
         </div>
 
+        {/* Marital Status */}
+        <div className="col-md-6">
+          <label className="form-label">Marital Status</label>
+          <select
+            name="maritalStatus"
+            className="form-select"
+            value={formData.maritalStatus}
+            onChange={handleChange}
+          >
+            <option value="">Select</option>
+            <option>Single</option>
+            <option>Married</option>
+          </select>
+        </div>
+
+        {/* Blood Group */}
         {/* Blood Group */}
         <div className="col-md-6">
           <label className="form-label">Blood Group</label>
-          <input
-            type="text"
+          <select
             name="bloodGroup"
-            className="form-control"
+            className="form-select"
             value={formData.bloodGroup}
             onChange={handleChange}
-          />
+            required
+          >
+            <option value="">-- Select Blood Group --</option>
+            <option value="A+">A+</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B-">B-</option>
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB-</option>
+          </select>
         </div>
 
         {/* Allergies */}
         <div className="col-md-6">
-          <label className="form-label">Allergies</label>
+          <label className="form-label">Allergies (comma-separated)</label>
           <input
             type="text"
             name="allergies"
@@ -96,13 +122,150 @@ const PatientForm = ({ formData, handleChange, handleSubmit, editingId }) => {
           />
         </div>
 
-        {/* Conditions */}
+        {/* Chronic Conditions */}
         <div className="col-md-12">
-          <label className="form-label">Medical Conditions</label>
-          <textarea
-            name="conditions"
+          <label className="form-label">Chronic Conditions (comma-separated)</label>
+          <input
+            type="text"
+            name="chronicConditions"
             className="form-control"
-            value={formData.conditions}
+            value={formData.chronicConditions}
+            onChange={handleChange}
+          />
+        </div>
+
+        {/* Current Medications */}
+        <div className="col-md-12">
+          <label className="form-label">Current Medications (comma-separated)</label>
+          <input
+            type="text"
+            name="currentMedications"
+            className="form-control"
+            value={formData.currentMedications}
+            onChange={handleChange}
+          />
+        </div>
+
+        {/* Address Fields */}
+        <div className="col-md-12">
+          <h5>Address</h5>
+        </div>
+        <div className="col-md-6">
+          <input
+            type="text"
+            name="address.street"
+            placeholder="Street"
+            className="form-control"
+            value={formData.address.street}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="col-md-6">
+          <input
+            type="text"
+            name="address.city"
+            placeholder="City"
+            className="form-control"
+            value={formData.address.city}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="col-md-6">
+          <input
+            type="text"
+            name="address.state"
+            placeholder="State"
+            className="form-control"
+            value={formData.address.state}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="col-md-6">
+          <input
+            type="text"
+            name="address.postalCode"
+            placeholder="Postal Code"
+            className="form-control"
+            value={formData.address.postalCode}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="col-md-6">
+          <input
+            type="text"
+            name="address.country"
+            placeholder="Country"
+            className="form-control"
+            value={formData.address.country}
+            onChange={handleChange}
+          />
+        </div>
+
+        {/* Emergency Contact */}
+        <div className="col-md-12">
+          <h5>Emergency Contact</h5>
+        </div>
+        <div className="col-md-4">
+          <input
+            type="text"
+            name="emergencyContact.name"
+            placeholder="Name"
+            className="form-control"
+            value={formData.emergencyContact.name}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="col-md-4">
+          <input
+            type="text"
+            name="emergencyContact.phone"
+            placeholder="Phone"
+            className="form-control"
+            value={formData.emergencyContact.phone}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="col-md-4">
+          <input
+            type="text"
+            name="emergencyContact.relation"
+            placeholder="Relation"
+            className="form-control"
+            value={formData.emergencyContact.relation}
+            onChange={handleChange}
+          />
+        </div>
+
+        {/* Insurance */}
+        <div className="col-md-12">
+          <h5>Insurance</h5>
+        </div>
+        <div className="col-md-4">
+          <input
+            type="text"
+            name="insurance.provider"
+            placeholder="Provider"
+            className="form-control"
+            value={formData.insurance.provider}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="col-md-4">
+          <input
+            type="text"
+            name="insurance.policyNumber"
+            placeholder="Policy Number"
+            className="form-control"
+            value={formData.insurance.policyNumber}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="col-md-4">
+          <input
+            type="date"
+            name="insurance.expiryDate"
+            className="form-control"
+            value={formData.insurance.expiryDate?.split("T")[0] || ""}
             onChange={handleChange}
           />
         </div>
