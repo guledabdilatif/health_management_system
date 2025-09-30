@@ -6,28 +6,31 @@ import { Eye, Edit, Trash2 } from "lucide-react";
 import PatientForm from "../components/Patient/PatientForm";
 import axios from "axios";
 import PatientDetails from "../components/Patient/PatientDetails";
+import { useNavigate } from "react-router-dom";
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 const Patients = () => {
+  const navigate = useNavigate();
   const [patients, setPatients] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [newPatient, setNewPatient] = useState(initialForm());
   const [viewPatient, setViewPatient] = useState(null);
   const [selectedPatient, setSelectedPatient] = useState(null);
 
-{/* inside table row */}
-<button
-  className="btn btn-info btn-sm"
-  onClick={() => setSelectedPatient(patient)}
->
-  View
-</button>
+  {/* inside table row */ }
+  <button
+    className="btn btn-info btn-sm"
+    onClick={() => setSelectedPatient(patient)}
+  >
+    View
+  </button>
 
-{/* modal */}
-<PatientDetails
-  patient={selectedPatient}
-  onClose={() => setSelectedPatient(null)}
-/>
+  {/* modal */ }
+  <PatientDetails
+    patient={selectedPatient}
+    onClose={() => setSelectedPatient(null)}
+  />
 
 
 
@@ -189,7 +192,7 @@ const Patients = () => {
                     <div className="d-flex justify-content-center gap-2">
                       <button
                         className="btn btn-sm btn-outline-dark"
-                        onClick={() => setViewPatient(p)}
+                        onClick={() => navigate(`/patients/${p._id}`)}
                         title="View"
                       >
                         <Eye size={16} />
@@ -228,7 +231,7 @@ const Patients = () => {
             className="fixed items-center justify-center "
             style={{ position: "absolute", top: "40px", width: "100%" }}
           >
-            <div className="bg-white p-5 rounded-3 shadow" style={{ width: "75%", margin:0,  }}>
+            <div className="bg-white p-5 rounded-3 shadow" style={{ width: "75%", margin: 0, }}>
               <h3 className="mb-3" style={{ color: "black" }}>
                 {selectedPatient ? "Edit Patient" : "Add Patient"}
               </h3>
@@ -237,7 +240,7 @@ const Patients = () => {
                 handleChange={handleChange}
                 handleSubmit={handleSubmit}
                 editingId={selectedPatient?._id}
-                style={{backgroundColor:'red'}}
+                style={{ backgroundColor: 'red' }}
               />
             </div>
           </div>

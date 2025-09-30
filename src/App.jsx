@@ -10,6 +10,7 @@ import Staffs from './pages/Staffs'
 import Documents from './pages/Documents'
 import Patients from './pages/Patients'
 import Report from './pages/Report'
+import PatientDetailsPage from "./pages/PatientDetailsPage";
 import NotFound from './components/NotFound'
 
 
@@ -24,6 +25,8 @@ function App() {
           <Route path="/documents" element={<Documents />} />
           <Route path="/patients" element={<Patients />} />
           <Route path="/reports" element={<Report />} />
+                  <Route path="/patients/:id" element={<PatientDetailsPage />} />
+
           <Route path="*" element={<NotFound />} />
           
         </Routes>
