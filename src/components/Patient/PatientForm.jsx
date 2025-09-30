@@ -1,9 +1,15 @@
 // src/patients/PatientForm.jsx
 import React from "react";
-
+import { X } from 'lucide-react';
 const PatientForm = ({ formData, handleChange, handleSubmit, editingId }) => {
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} style={{position:'relative'}}>
+      <button
+          type="button" 
+                
+          onClick={() => window.location.reload()} // refresh body on close
+          style={{position:'absolute', right:'0', top:'-70px', border:'none'}}
+        ><X size={28} color="green"/></button>
       <div className="row">
         {/* Full Name */}
         <div className="col-md-6">

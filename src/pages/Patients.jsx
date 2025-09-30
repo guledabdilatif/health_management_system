@@ -6,7 +6,7 @@ import { Eye, Edit, Trash2 } from "lucide-react";
 import PatientForm from "../components/Patient/PatientForm";
 import axios from "axios";
 import PatientDetails from "../components/Patient/PatientDetails";
-const API_URL = "https://health-mngt-system.vercel.app/patients";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const Patients = () => {
   const [patients, setPatients] = useState([]);
@@ -37,7 +37,7 @@ const Patients = () => {
 
   const fetchPatients = async () => {
     try {
-      const res = await axios.get(API_URL);
+      const res = await axios.get(`${API_URL}/patients`);
       setPatients(res.data.data.results || []);
     } catch (error) {
       console.error("Error fetching patients:", error);
@@ -78,7 +78,7 @@ const Patients = () => {
 
     try {
       if (selectedPatient) {
-        await axios.put(`${API_URL}/${selectedPatient._id}`, payload);
+        await axios.put(`${API_URL}/patients/${selectedPatient._id}`, payload);
       } else {
         await axios.post(API_URL, payload);
       }
@@ -92,7 +92,7 @@ const Patients = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this patient?")) {
       try {
-        await axios.delete(`${API_URL}/${id}`);
+        await axios.delete(`${API_URL}/patients/${id}`);
         setPatients(patients.filter((p) => p._id !== id));
       } catch (error) {
         console.error("Error deleting patient:", error);
@@ -111,15 +111,6 @@ const Patients = () => {
     });
     setShowForm(true);
   };
-
-  const handleView = (p) => {
-    alert(
-      `Patient Details:\n\nName: ${p.fullName}\nGender: ${p.gender}\nPhone: ${p.phone
-      }\nBlood Group: ${p.bloodGroup || "N/A"}\nAllergies: ${p.allergies?.join(", ") || "None"
-      }\nConditions: ${p.chronicConditions?.join(", ") || "None"}`
-    );
-  };
-
   function initialForm() {
     return {
       fullName: "",
