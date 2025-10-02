@@ -101,7 +101,7 @@ const Staffs = () => {
       if (editingId) {
         await axios.put(`${API_URL}/staff/${editingId}`, payload);
       } else {
-        await axios.post(API_URL, payload);
+        await axios.post(`${API_URL}/staff`, payload);
       }
 
       // Try to hide modal (works when bootstrap JS is loaded). If not available, fallback to clicking close btn.

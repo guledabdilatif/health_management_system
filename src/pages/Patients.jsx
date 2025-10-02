@@ -83,7 +83,7 @@ const Patients = () => {
       if (selectedPatient) {
         await axios.put(`${API_URL}/patients/${selectedPatient._id}`, payload);
       } else {
-        await axios.post(API_URL, payload);
+        await axios.post(`${API_URL}/patients`, payload);
       }
       await fetchPatients();
       resetForm();

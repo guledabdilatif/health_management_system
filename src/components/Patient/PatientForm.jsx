@@ -3,13 +3,13 @@ import React from "react";
 import { X } from 'lucide-react';
 const PatientForm = ({ formData, handleChange, handleSubmit, editingId }) => {
   return (
-    <form onSubmit={handleSubmit} style={{position:'relative'}}>
+    <form onSubmit={handleSubmit} style={{ position: 'relative' }}>
       <button
-          type="button" 
-                
-          onClick={() => window.location.reload()} // refresh body on close
-          style={{position:'absolute', right:'0', top:'-70px', border:'none'}}
-        ><X size={28} color="green"/></button>
+        type="button"
+
+        onClick={() => window.location.reload()} // refresh body on close
+        style={{ position: 'absolute', right: '0', top: '-70px', border: 'none' }}
+      ><X size={28} color="green" /></button>
       <div className="row">
         {/* Full Name */}
         <div className="col-md-6">
@@ -288,7 +288,9 @@ const PatientForm = ({ formData, handleChange, handleSubmit, editingId }) => {
             <option value="active">Active</option>
             <option value="inactive">Inactive</option>
           </select>
+
         </div>
+
       </div>
 
       <div className="text-center mt-4">
